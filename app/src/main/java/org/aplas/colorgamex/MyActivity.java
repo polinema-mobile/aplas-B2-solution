@@ -13,7 +13,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class MyActivity extends AppCompatActivity {
@@ -36,6 +38,7 @@ public class MyActivity extends AppCompatActivity {
     final String FORMAT = "%d:%d";
     String[] clrList;
     HashMap charList = new HashMap();
+    boolean isStarted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,13 @@ public class MyActivity extends AppCompatActivity {
         }
     }
     public void startGame(View v) {
+        if (!isStarted) {
+            progress.setProgress(0);
+            scoreText.setText("0");
+            start.setVisibility(View.INVISIBLE);
+            isStarted = true;
+            newGameStage();
+        }
     }
     public void submitColor(View v) {
     }
@@ -105,5 +115,25 @@ public class MyActivity extends AppCompatActivity {
         for (int i=0; i<clrList.length; i++) {
             charList.put(clrList[i],temp[i]);
         }
+
+        String clrTxt = ((TextView)findViewById(R.id.clrText)).getText().toString();
+        int lastNum = Arrays.asList(clrList).indexOf(clrTxt);
+        int colorIdx = getNewRandomInt(0,5,lastNum);
+        clrText.setText(clrList[colorIdx]);
+        countDown.start();
+    }
+
+    int getNewRandomInt(int min, int max, int except) {
+        Random r = new Random();
+        boolean found = false;
+        int number;
+        do {
+            number = r.ints(min, (max + 1)).findFirst().getAsInt();
+            if (number!=except) found=true;
+        } while (!found);
+        return number;
+    }
+
+    private void newGameStage() {
     }
 }
